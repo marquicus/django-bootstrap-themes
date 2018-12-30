@@ -21,4 +21,9 @@ def list_themes():
 
 
 def get_styles(theme='default_bt3'):
-    return available_themes('%(theme)s' % dict(theme=theme))
+    try:
+        if theme not in available_themes:
+            return available_themes[theme]
+    except KeyError:
+        print("Theme not available [%s] using default" % theme)
+    return available_themes['default_bt3']
