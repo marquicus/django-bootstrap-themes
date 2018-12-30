@@ -1,32 +1,24 @@
-from django.contrib.staticfiles.storage import staticfiles_storage
+from django.utils.text import slugify
+import requests
 
-available_themes = (
-    ('default', 'Default'),
-    ('amelia', 'Amelia'),
-    ('cerulean', 'Cerulean'),
-    ('cosmo', 'Cosmo'),
-    ('cyborg', 'Cyborg'),
-    ('flatly', 'Flatly'),
-    ('journal', 'Journal'),
-    ('readable', 'Readable'),
-    ('simplex', 'Simplex'),
-    ('slate', 'Slate'),
-    ('spacelab', 'SpaceLab'),
-    ('united', 'United'),
-    ('superhero', 'Superhero'),
-    ('lumen', 'Lumen'),
-)
+
+api_bootstrap = {
+    'bt3': 'http://bootswatch.com/api/3.json',
+    'bt4': 'http://bootswatch.com/api/4.json'
+}
+available_themes = {
+    'default_bt3': 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+    'default_bt4': 'https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css',
+}
+for key, url in api_bootstrap.items():
+    theme_api = requests.get(url=url, headers={'User-Agent': 'Mozilla/5.0 (compatible)'})
+    for _, theme in enumerate(theme_api.json()["themes"]):
+        available_themes[slugify(theme["name"] + "_" + key)] = theme["cssCdn"]
+
 
 def list_themes():
     return available_themes
 
-def get_script(use_min=True):
-    minified = ''
-    if use_min:
-        minified = '.min'
-    return staticfiles_storage.url('bootstrap/js/bootstrap%(minified)s.js' % dict(minified=minified))
 
-def get_styles(theme='default', subdir='css', fileext='min.css'):
-    if (not theme) or (theme == ''):
-        theme = 'default'
-    return staticfiles_storage.url('bootstrap/themes/%(theme)s/%(subdir)s/bootstrap.%(fileext)s' % dict(theme=theme, subdir=subdir, fileext=fileext))
+def get_styles(theme='default_bt3'):
+    return available_themes('%(theme)s' % dict(theme=theme))
