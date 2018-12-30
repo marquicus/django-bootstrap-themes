@@ -17,7 +17,7 @@ for key, url in api_bootstrap.items():
 
 
 def list_themes():
-    return available_themes
+    return available_themes.items()
 
 
 def get_styles(theme='default_bt3'):
