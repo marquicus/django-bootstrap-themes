@@ -19,11 +19,17 @@ for key, url in api_bootstrap.items():
 def list_themes():
     return available_themes.items()
 
+def get_script(use_min=True):
+    minified = '.min' if use_min else ''
 
-def get_styles(theme='default_bt3'):
+    return staticfiles_storage.url('bootstrap/js/bootstrap%(minified)s.js' % dict(minified=minified))
+
+def get_styles(theme='default', use_min=True):
+    selected_theme='default'
+    minified = '.min' if use_min else ''
     try:
         if theme in available_themes:
-            return available_themes[theme]
+            selected_theme=theme
     except KeyError:
         print("Theme not available [%s] using default" % theme)
-    return available_themes['default_bt3']
+    return staticfiles_storage.url('bootstrap/themes/%(theme)s/css/bootstrap%(minified)s.css' % dict(theme=theme))
