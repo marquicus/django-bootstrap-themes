@@ -2,11 +2,9 @@
 
 from setuptools import setup, find_packages
 
-version = '3.3.6'
-
 setup(
     name='django-bootstrap-themes',
-    version=version,
+    version=__import__('bootstrap_themes').__version__,
     description="Bootstrap theme support for Django.",
     long_description=open("README.md", "r").read(),
     classifiers=[
